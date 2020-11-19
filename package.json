@@ -1,6 +1,6 @@
 {
   "name": "vue3-color-checker",
-  "description": "",
+  "description": "A web application to check a color looking way.",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
