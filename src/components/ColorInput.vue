@@ -7,7 +7,7 @@
         class="color"
         autocomplete="off"
         v-model="colorCode"
-        @keyup="upperCase"
+        @keyup="adjustCode"
         @keyup.enter="$emit('update', colorCode)"
         @focus="clearInputColor"
       />
@@ -17,7 +17,7 @@
 
 <script setup="props">
 import { ref } from "vue";
-import { upper } from "../modules/helpers";
+import { startsWith, upper } from "../modules/helpers";
 
 
 export default {
@@ -31,8 +31,11 @@ export default {
 export const colorCode = ref(props.code);
 
 
-export function upperCase() {
+export function adjustCode() {
   colorCode.value = upper(colorCode.value);
+  if (startsWith(colorCode.value, "#")) {
+    colorCode.value = colorCode.value.slice(1);
+  }
 }
 
 export function clearInputColor() {
