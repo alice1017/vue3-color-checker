@@ -24,15 +24,15 @@
 import ColorInput from "./components/ColorInput.vue";
 import ColorReferences from "./components/ColorReferences.vue";
 import ColorHistories from "./components/ColorHistories.vue";
-import { ref, computed } from "vue";
+
 import chroma from "chroma-js";
-import { setSharp, upper, range } from "./modules/helpers";
+import { ref, computed } from "vue";
+import { setSharp, upper, separateArray } from "./modules/helpers";
 
 
 const defaultColor = "#a8dadc";
 const blackColor = "#444444";
 const whiteColor = "#efefef";
-const whiteBrightColor = "#ffffff";
 
 
 export default {
@@ -43,6 +43,7 @@ export default {
     ColorHistories
   }
 }
+
 
 export const bgColor = ref(defaultColor);
 export const inputColor = ref("A8DADC");
@@ -55,7 +56,6 @@ export const histories = ref([
 ]);
 
 
-
 export const lightness = computed(() => {
   const L = chroma(bgColor.value).get("hsl.l");
   return Math.floor(L * 100) / 100;
@@ -66,37 +66,15 @@ export const contentColor = computed(() => {
 });
 
 export const separatedHistories = computed(() => {
-  const result = [];
-  const total = histories.value.length;
-  const arrays = Math.round(total / 5);
-  const items = 5 * arrays;
-  const remains = total - items;
-  //console.log(total, arrays, items, remains)
-  let start = 0;
-  let end = 5;
-
   const updatedHistories = histories.value.map(color => {
     const isDup = bgColor.value === color;
     return { code: color, dup: isDup};
   });
-
-  for (const i of range(arrays)) {
-    result.push(
-      updatedHistories.slice(start, end)
-    );
-    start = end;
-    end = start + 5;
-  }
-  result.push(
-    updatedHistories.slice(total-remains, total)
-  );
-  return result;
+  return separateArray(updatedHistories);
 });
 
 
-
 export function updateColor(colorCode) {
-  console.log("updateColor", colorCode);
   if (colorCode !== "") {
     const newColor = setSharp(colorCode);
     try {
