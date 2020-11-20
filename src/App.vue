@@ -9,20 +9,7 @@
           </h1>
         </header>
 
-        <section class="section">
-          <div class="input-color">
-            <span class="sharp">#</span>
-            <input
-              type="text"
-              class="color"
-              autocomplete="off"
-              v-model="inputColor"
-              @keyup="upperCase"
-              @keyup.enter="changeColor"
-              @focus="clearInputColor"
-            />
-          </div>
-        </section>
+        <color-input :code="inputColor" @update="updateColor" />
 
         <color-references />
 
@@ -34,28 +21,33 @@
 </template>
 
 <script setup>
+import ColorInput from "./components/ColorInput.vue";
 import ColorReferences from "./components/ColorReferences.vue";
 import ColorHistories from "./components/ColorHistories.vue";
 import { ref, computed } from "vue";
 import chroma from "chroma-js";
 import { setSharp, upper, range } from "./modules/helpers";
 
+
+const defaultColor = "#a8dadc";
 const blackColor = "#444444";
 const whiteColor = "#efefef";
 const whiteBrightColor = "#ffffff";
 
+
 export default {
   name: "App",
   components: {
+    ColorInput,
     ColorReferences,
     ColorHistories
   }
 }
 
-export const bgColor = ref("#a8dadc");
+export const bgColor = ref(defaultColor);
 export const inputColor = ref("A8DADC");
 export const histories = ref([
-  "#a8dadc",
+  defaultColor,
   "#0081a7",
   "#00afb9",
   "#fdfcdc",
@@ -103,9 +95,10 @@ export const separatedHistories = computed(() => {
 
 
 
-export function changeColor() {
-  if (inputColor.value !== "") {
-    const newColor = setSharp(inputColor.value);
+export function updateColor(colorCode) {
+  console.log("updateColor", colorCode);
+  if (colorCode !== "") {
+    const newColor = setSharp(colorCode);
     try {
       chroma(newColor);
       bgColor.value = newColor;
@@ -115,15 +108,6 @@ export function changeColor() {
       return;
     }
   }
-  console.log(separatedHistories.value);
-}
-
-export function upperCase() {
-  inputColor.value = upper(inputColor.value);
-}
-
-export function clearInputColor() {
-  inputColor.value = "";
 }
 
 export function rebornColor(code) {
