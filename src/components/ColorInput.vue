@@ -16,7 +16,7 @@
 </template>
 
 <script setup="props">
-import { ref } from "vue";
+import { ref, computed, watch } from "vue";
 import { startsWith, upper } from "../modules/helpers";
 
 
@@ -26,6 +26,14 @@ export default {
     code: String
   }
 }
+
+
+watch(
+  () => props.code,
+  (newone, _) => {
+    colorCode.value = newone;
+  }
+);
 
 
 export const colorCode = ref(props.code);
